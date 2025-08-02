@@ -73,26 +73,26 @@ export default function SubjectPanel({ subjects, onAddSubject, onSubjectClick, c
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="title" className="text-amber-800">
-                    Title
+                    Título da Matéria
                   </Label>
                   <Input
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="border-amber-300 focus:border-amber-500 focus:ring-amber-500"
-                    placeholder="Enter subject title"
+                    placeholder="Ex: Equações Diferenciais"
                   />
                 </div>
                 <div>
                   <Label htmlFor="description" className="text-amber-800">
-                    Description
+                    Descrição
                   </Label>
                   <Textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="border-amber-300 focus:border-amber-500 focus:ring-amber-500"
-                    placeholder="Enter subject description"
+                    placeholder="Descrição da Matéria"
                     rows={3}
                   />
                 </div>

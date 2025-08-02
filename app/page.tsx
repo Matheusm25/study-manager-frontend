@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { User, Lock, Sparkles } from "lucide-react"
+import { AuthService } from "@/service/auth"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -15,22 +16,32 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const loginErrors: Record<string, string> = {
+    UserConflict: 'O usuario já existe com uma senha diferente',
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (username === "test123") {
-      setError("User already exists")
-      return
-    }
-
-    // Simple validation - in a real app, you'd validate against a backend
     if (username.trim() && password.trim()) {
+      const response = await AuthService.login(username, password)
+
+      console.log("Login response:", response)
+
+      if (loginErrors[response]) {
+        setError(loginErrors[response])
+        return
+      } else if (!response) {
+        setError("Erro ao fazer login. Tente novamente.")
+        return
+      }
+
       // Store login state in localStorage for demo purposes
-      localStorage.setItem("isLoggedIn", "true")
+      localStorage.setItem("api-token", response)
       localStorage.setItem("username", username)
       router.push("/dashboard")
     } else {
-      setError("Please enter both username and password")
+      setError("usuário e senha são obrigatórios.")
     }
   }
 
@@ -62,7 +73,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="username" className="text-text-primary font-medium flex items-center gap-2">
                 <User className="w-4 h-4" />
-                Username
+                Usuário
               </Label>
               <Input
                 id="username"
@@ -70,13 +81,13 @@ export default function LoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="border-0 bg-gradient-to-br from-pastel-cream-50 to-pastel-light-grey-50 focus:ring-2 focus:ring-pastel-muted-blue-400 rounded-xl h-12 text-text-primary placeholder:text-text-secondary"
-                placeholder="Enter your username"
+                placeholder="Usuário"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password" className="text-text-primary font-medium flex items-center gap-2">
                 <Lock className="w-4 h-4" />
-                Password
+                Senha
               </Label>
               <Input
                 id="password"
@@ -84,7 +95,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="border-0 bg-gradient-to-br from-pastel-cream-50 to-pastel-light-grey-50 focus:ring-2 focus:ring-pastel-muted-blue-400 rounded-xl h-12 text-text-primary placeholder:text-text-secondary"
-                placeholder="Enter your password"
+                placeholder="Digite sua senha"
               />
             </div>
             {error && (
@@ -97,7 +108,7 @@ export default function LoginPage() {
               className="w-full bg-gradient-to-r from-pastel-muted-blue-500 to-pastel-lavender-500 hover:from-pastel-muted-blue-600 hover:to-pastel-lavender-600 text-white border-0 rounded-xl h-12 text-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              Sign In
+              Entrar
             </Button>
           </form>
         </CardContent>

@@ -9,12 +9,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Plus, BookOpen, Calendar, Sparkles } from "lucide-react"
-import type { Subject } from "@/app/dashboard/page"
+import { ISubject } from "@/service/interfaces/subject"
 
 interface SubjectPanelProps {
-  subjects: Subject[]
+  subjects: ISubject[]
   onAddSubject: (title: string, description: string, date?: Date) => void
-  onSubjectClick: (subject: Subject) => void
+  onSubjectClick: (subject: ISubject) => void
   currentMonth: Date
 }
 
@@ -39,18 +39,18 @@ export default function ModernSubjectPanel({
   }
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ]
 
   return (
@@ -65,7 +65,7 @@ export default function ModernSubjectPanel({
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-lg font-bold">Subjects</CardTitle>
+                <CardTitle className="text-lg font-bold">Matérias</CardTitle>
                 <p className="text-pastel-muted-blue-100 text-sm">
                   {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                 </p>
@@ -82,7 +82,7 @@ export default function ModernSubjectPanel({
             size="sm"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add New Subject
+            Adicionar Nova Matéria
           </Button>
         </div>
 
@@ -98,26 +98,26 @@ export default function ModernSubjectPanel({
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="title" className="text-text-primary font-medium">
-                    Subject Title
+                    Título da matéria
                   </Label>
                   <Input
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="border-0 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-pastel-sage-400 rounded-xl mt-1"
-                    placeholder="Enter subject title..."
+                    placeholder="Ex: Equações Diferenciais"
                   />
                 </div>
                 <div>
                   <Label htmlFor="description" className="text-text-primary font-medium">
-                    Description
+                    Descrição
                   </Label>
                   <Textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="border-0 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-pastel-sage-400 rounded-xl mt-1 resize-none"
-                    placeholder="Describe what you'll study..."
+                    placeholder="Descreva o que você vai estudar..."
                     rows={3}
                   />
                 </div>
@@ -127,7 +127,7 @@ export default function ModernSubjectPanel({
                     className="flex-1 bg-gradient-to-r from-pastel-sage-500 to-pastel-muted-blue-500 hover:from-pastel-sage-600 hover:to-pastel-muted-blue-600 text-white border-0 rounded-xl transition-all duration-200 hover:scale-105"
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-                    Create Subject
+                    Criar Matéria
                   </Button>
                   <Button
                     type="button"
@@ -150,13 +150,13 @@ export default function ModernSubjectPanel({
               <div className="w-12 h-12 bg-gradient-to-br from-pastel-sage-100 to-pastel-cream-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <BookOpen className="w-6 h-6 text-pastel-sage-600" />
               </div>
-              <p className="text-text-primary font-medium mb-1">No subjects yet</p>
-              <p className="text-text-secondary text-sm">Add your first subject!</p>
+              <p className="text-text-primary font-medium mb-1">Nenhuma matéria ainda</p>
+              <p className="text-text-secondary text-sm">Adicione sua primeira matéria!</p>
             </div>
           ) : (
             subjects.map((subject, index) => (
               <Card
-                key={subject.id}
+                key={subject.uuid}
                 className="border-0 bg-gradient-to-br from-white to-pastel-sage-50/50 shadow-md hover:shadow-xl cursor-pointer transition-all duration-300 group overflow-hidden"
                 onClick={() => onSubjectClick(subject)}
               >
@@ -169,7 +169,7 @@ export default function ModernSubjectPanel({
                       variant="secondary"
                       className="bg-gradient-to-r from-pastel-sage-200 to-pastel-muted-blue-200 text-pastel-muted-blue-800 border-0 text-xs flex-shrink-0"
                     >
-                      Study
+                      Estudar
                     </Badge>
                   </div>
 
@@ -179,7 +179,7 @@ export default function ModernSubjectPanel({
 
                   <div className="flex items-center gap-2 text-text-secondary text-xs">
                     <Calendar className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{subject.createdDate.toLocaleDateString()}</span>
+                    <span className="truncate">{subject.studyDate.toLocaleDateString()}</span>
                   </div>
 
                   {/* Hover Effect */}

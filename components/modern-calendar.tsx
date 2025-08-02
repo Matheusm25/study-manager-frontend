@@ -5,13 +5,13 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronLeft, ChevronRight, Calendar, Sparkles } from "lucide-react"
-import type { Subject } from "@/app/dashboard/page"
+import { ISubject } from "@/service/interfaces/subject"
 
 interface CalendarProps {
   currentDate: Date
   onDateChange: (date: Date) => void
-  subjects: Subject[]
-  onSubjectClick: (subject: Subject) => void
+  subjects: ISubject[]
+  onSubjectClick: (subject: ISubject) => void
   onDayClick: (date: Date) => void
   username: string
 }
@@ -25,18 +25,18 @@ export default function ModernCalendar({
   username,
 }: CalendarProps) {
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ]
 
   const getDaysInMonth = (date: Date) => {
@@ -59,7 +59,7 @@ export default function ModernCalendar({
 
   const getSubjectsForDay = (day: number) => {
     return subjects.filter((subject) => {
-      const subjectDate = subject.createdDate
+      const subjectDate = subject.studyDate
       return (
         subjectDate.getDate() === day &&
         subjectDate.getMonth() === currentDate.getMonth() &&
@@ -69,7 +69,6 @@ export default function ModernCalendar({
   }
 
   const handleDayClick = (day: number, e: React.MouseEvent) => {
-    // Check if the click was on a subject card
     const target = e.target as HTMLElement
     if (target.closest("[data-subject-card]")) {
       return // Don't open day modal if clicking on a subject card
@@ -109,14 +108,14 @@ export default function ModernCalendar({
 
             {/* Center: Username Schedule */}
             <div className="text-center">
-              <h1 className="text-xl font-bold tracking-tight">{username} Schedule</h1>
-              <p className="text-pastel-muted-blue-100 font-medium text-sm">Manage your study sessions</p>
+              <h1 className="text-xl font-bold tracking-tight">Cronograma {username}</h1>
+              <p className="text-pastel-muted-blue-100 font-medium text-sm">Gerencie suas sessões de estudo</p>
             </div>
 
             {/* Right: Subject Count + Navigation */}
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="bg-white/20 text-white border-0 backdrop-blur-sm">
-                {subjects.length} subjects
+                {subjects.length} matérias
               </Badge>
               <div className="flex gap-2">
                 <Button
@@ -148,7 +147,7 @@ export default function ModernCalendar({
       <CardContent className="p-8">
         {/* Modern Day Headers */}
         <div className="grid grid-cols-7 gap-3 mb-8">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (
+          {["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"].map((day, index) => (
             <div
               key={day}
               className={`p-4 text-center text-sm font-bold rounded-2xl transition-all duration-200 ${
@@ -200,7 +199,7 @@ export default function ModernCalendar({
                 <div className="space-y-1 overflow-hidden max-h-16">
                   {daySubjects.map((subject, index) => (
                     <div
-                      key={subject.id}
+                      key={subject.uuid}
                       data-subject-card
                       onClick={(e) => {
                         e.stopPropagation()

@@ -10,12 +10,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, BookOpen, Plus, Sparkles } from "lucide-react"
-import type { Subject } from "@/app/dashboard/page"
+import { ISubject } from "@/service/interfaces/subject"
 
 interface DayModalProps {
   date: Date
-  subjects: Subject[]
-  onSubjectClick: (subject: Subject) => void
+  subjects: ISubject[]
+  onSubjectClick: (subject: ISubject) => void
   onClose: () => void
   onAddSubject: (title: string, description: string, date?: Date) => void
 }
@@ -26,21 +26,21 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
   const [newSubjectDescription, setNewSubjectDescription] = useState("")
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ]
 
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  const dayNames = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"]
 
   const formatDate = (date: Date) => {
     return `${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
@@ -70,11 +70,11 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                 </div>
                 <div>
                   <DialogTitle className="text-2xl font-bold tracking-tight">{formatDate(date)}</DialogTitle>
-                  <p className="text-pastel-muted-blue-100 font-medium">Study Schedule</p>
+                  <p className="text-pastel-muted-blue-100 font-medium">Cronograma de estudo</p>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-white/20 text-white border-0 backdrop-blur-sm">
-                {subjects.length} subjects
+                {subjects.length} matérias
               </Badge>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
         <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(80vh-120px)]">
           {/* Add Subject Section */}
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-text-primary">Add Subject</h3>
+            <h3 className="text-xl font-bold text-text-primary">Adicionar Matéria</h3>
             <Button
               onClick={() => setShowAddForm(!showAddForm)}
               className="bg-gradient-to-r from-pastel-sage-500 to-pastel-muted-blue-500 hover:from-pastel-sage-600 hover:to-pastel-muted-blue-600 text-white border-0 rounded-xl transition-all duration-200 hover:scale-105"
@@ -104,26 +104,26 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                 <form onSubmit={handleAddSubjectSubmit} className="space-y-4">
                   <div>
                     <Label htmlFor="new-subject-title" className="text-text-primary font-medium">
-                      Subject Title
+                      Título da Matéria
                     </Label>
                     <Input
                       id="new-subject-title"
                       value={newSubjectTitle}
                       onChange={(e) => setNewSubjectTitle(e.target.value)}
                       className="border-0 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-pastel-sage-400 rounded-xl mt-1"
-                      placeholder="Enter subject title..."
+                      placeholder="Ex: Equações Diferenciais"
                     />
                   </div>
                   <div>
                     <Label htmlFor="new-subject-description" className="text-text-primary font-medium">
-                      Description
+                      Descrição
                     </Label>
                     <Textarea
                       id="new-subject-description"
                       value={newSubjectDescription}
                       onChange={(e) => setNewSubjectDescription(e.target.value)}
                       className="border-0 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-pastel-sage-400 rounded-xl mt-1 resize-none"
-                      placeholder="Describe what you'll study..."
+                      placeholder="Descreva o que você vai estudar..."
                       rows={3}
                     />
                   </div>
@@ -133,7 +133,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                       className="flex-1 bg-gradient-to-r from-pastel-sage-500 to-pastel-muted-blue-500 hover:from-pastel-sage-600 hover:to-pastel-muted-blue-600 text-white border-0 rounded-xl transition-all duration-200 hover:scale-105"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      Create Subject
+                      Criar Matéria
                     </Button>
                     <Button
                       type="button"
@@ -141,7 +141,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                       onClick={() => setShowAddForm(false)}
                       className="border-pastel-sage-300 text-pastel-sage-700 hover:bg-pastel-sage-100 rounded-xl"
                     >
-                      Cancel
+                      Cancelar
                     </Button>
                   </div>
                 </form>
@@ -153,7 +153,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
           <div>
             <h3 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5" />
-              Subjects for This Day
+              Matérias para este dia
             </h3>
 
             <div className="space-y-4">
@@ -162,13 +162,13 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                   <div className="w-16 h-16 bg-gradient-to-br from-pastel-sage-100 to-pastel-cream-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <BookOpen className="w-8 h-8 text-pastel-sage-600" />
                   </div>
-                  <p className="text-text-primary font-medium mb-2">No subjects scheduled</p>
-                  <p className="text-text-secondary text-sm">No study subjects are scheduled for this day.</p>
+                  <p className="text-text-primary font-medium mb-2">Nenhuma matéria agendada</p>
+                  <p className="text-text-secondary text-sm">Nenhuma matéria de estudo está agendada para este dia.</p>
                 </div>
               ) : (
                 subjects.map((subject, index) => (
                   <Card
-                    key={subject.id}
+                    key={subject.uuid}
                     className="border-0 bg-gradient-to-br from-white to-pastel-sage-50/50 shadow-md hover:shadow-xl cursor-pointer transition-all duration-300 group overflow-hidden"
                     onClick={() => {
                       onSubjectClick(subject)
@@ -185,7 +185,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
                             variant="secondary"
                             className="bg-gradient-to-r from-pastel-sage-200 to-pastel-muted-blue-200 text-pastel-muted-blue-800 border-0 text-xs"
                           >
-                            Study
+                            Estudo
                           </Badge>
                         </div>
                       </div>
@@ -194,7 +194,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
 
                       <div className="flex items-center gap-2 text-sm text-text-secondary">
                         <Calendar className="w-4 h-4" />
-                        <span>Created on {subject.createdDate.toLocaleDateString()}</span>
+                        <span>Criado em {subject.studyDate.toLocaleDateString()}</span>
                       </div>
 
                       {/* Hover Effect */}

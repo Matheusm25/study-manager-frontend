@@ -9,11 +9,12 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Plus, StickyNote, Calendar, Sparkles, Edit } from "lucide-react"
-import type { Subject, Note } from "@/app/dashboard/page"
+import { ISubject } from "@/service/interfaces/subject"
+import { INote } from "@/service/interfaces/note"
 
 interface NotesModalProps {
-  subject: Subject
-  notes: Note[]
+  subject: ISubject
+  notes: INote[]
   onAddNote: (subjectId: string, content: string) => void
   onClose: () => void
 }
@@ -25,7 +26,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (noteContent.trim()) {
-      onAddNote(subject.id, noteContent.trim())
+      onAddNote(subject.uuid, noteContent.trim())
       setNoteContent("")
       setShowAddForm(false)
     }
@@ -45,11 +46,11 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                 </div>
                 <div>
                   <DialogTitle className="text-2xl font-bold tracking-tight">{subject.title}</DialogTitle>
-                  <p className="text-pastel-muted-blue-100 font-medium">Study Notes</p>
+                  <p className="text-pastel-muted-blue-100 font-medium">Anotações de {subject.title}</p>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-white/20 text-white border-0 backdrop-blur-sm">
-                {notes.length} notes
+                {notes.length} notas
               </Badge>
             </div>
           </div>
@@ -66,7 +67,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-bold text-text-primary flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
-                  Subject Details
+                  Detalhes da Matéria
                 </h3>
                 <Button
                   size="sm"
@@ -74,27 +75,27 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                   className="border-pastel-sage-300 text-pastel-sage-700 hover:bg-pastel-sage-100 rounded-xl bg-transparent"
                 >
                   <Edit className="w-4 h-4 mr-1" />
-                  Edit Subject
+                  Editar Matéria
                 </Button>
               </div>
               <p className="text-text-secondary mb-3 leading-relaxed">{subject.description}</p>
               <div className="flex items-center gap-2 text-sm text-text-secondary">
                 <Calendar className="w-4 h-4" />
-                <span>Created on {subject.createdDate.toLocaleDateString()}</span>
+                <span>Criado em {subject.studyDate.toLocaleDateString()}</span>
               </div>
             </CardContent>
           </Card>
 
           {/* Add Note Section */}
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-text-primary">Notes</h3>
+            <h3 className="text-xl font-bold text-text-primary">Notas</h3>
             <Button
               onClick={() => setShowAddForm(!showAddForm)}
               className="bg-gradient-to-r from-pastel-sage-500 to-pastel-muted-blue-500 hover:from-pastel-sage-600 hover:to-pastel-muted-blue-600 text-white border-0 rounded-xl transition-all duration-200 hover:scale-105"
               size="sm"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add Note
+              Adicionar Nota
             </Button>
           </div>
 
@@ -104,14 +105,14 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <Label htmlFor="note-content" className="text-text-primary font-medium">
-                      Note Content
+                      Conteúdo da Nota
                     </Label>
                     <Textarea
                       id="note-content"
                       value={noteContent}
                       onChange={(e) => setNoteContent(e.target.value)}
                       className="border-0 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-pastel-sage-400 rounded-xl mt-2"
-                      placeholder="Write your study notes here..."
+                      placeholder="Escreva suas anotações aqui..."
                       rows={4}
                     />
                   </div>
@@ -121,7 +122,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                       className="flex-1 bg-gradient-to-r from-pastel-sage-500 to-pastel-muted-blue-500 hover:from-pastel-sage-600 hover:to-pastel-muted-blue-600 text-white border-0 rounded-xl transition-all duration-200 hover:scale-105"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      Save Note
+                      Salvar Nota
                     </Button>
                     <Button
                       type="button"
@@ -129,7 +130,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                       onClick={() => setShowAddForm(false)}
                       className="border-pastel-sage-300 text-pastel-sage-700 hover:bg-pastel-sage-100 rounded-xl"
                     >
-                      Cancel
+                      Cancelar
                     </Button>
                   </div>
                 </form>
@@ -144,15 +145,15 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                 <div className="w-16 h-16 bg-gradient-to-br from-pastel-sage-100 to-pastel-cream-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <StickyNote className="w-8 h-8 text-pastel-sage-600" />
                 </div>
-                <p className="text-text-primary font-medium mb-2">No notes yet</p>
-                <p className="text-text-secondary text-sm">Add your first study note!</p>
+                <p className="text-text-primary font-medium mb-2">Nenhuma nota ainda</p>
+                <p className="text-text-secondary text-sm">Adicione sua primeira nota de estudo!</p>
               </div>
             ) : (
               notes
-                .sort((a, b) => b.createdDate.getTime() - a.createdDate.getTime())
+                .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
                 .map((note, index) => (
                   <Card
-                    key={note.id}
+                    key={note.uuid}
                     className="border-0 bg-gradient-to-br from-white to-pastel-sage-50/50 shadow-md hover:shadow-lg transition-all duration-300 group overflow-hidden"
                   >
                     <CardContent className="p-6 relative">
@@ -160,7 +161,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                       <div className="flex items-center gap-2 text-sm text-text-secondary">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          {note.createdDate.toLocaleDateString()} at {note.createdDate.toLocaleTimeString()}
+                          {note.createdAt.toLocaleDateString()} at {note.createdAt.toLocaleTimeString()}
                         </span>
                       </div>
 

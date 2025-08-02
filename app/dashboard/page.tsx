@@ -8,7 +8,10 @@ import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 import ModernCalendar from "@/components/modern-calendar"
 import ModernSubjectPanel from "@/components/modern-subject-panel"
-import { addNote } from "@/utils/note-utils" // Declare the variable before using it
+import { SubjectService } from "@/service/subject"
+import { ICreateSubjectRequest, ISubject } from "@/service/interfaces/subject"
+import { NoteService } from "@/service/note"
+import { INote } from "@/service/interfaces/note"
 
 export interface Subject {
   id: string
@@ -25,17 +28,25 @@ export interface Note {
 }
 
 export default function Dashboard() {
-  const [subjects, setSubjects] = useState<Subject[]>([])
-  const [notes, setNotes] = useState<Note[]>([])
-  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null)
+  const [subjects, setSubjects] = useState<ISubject[]>([])
+  const [notes, setNotes] = useState<INote[]>([])
+  const [selectedSubject, setSelectedSubject] = useState<ISubject | null>(null)
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [username, setUsername] = useState("")
   const router = useRouter()
 
+  const bootstrapData = async () => {
+    const subjectsData = await SubjectService.getSubjects(currentDate)
+    setSubjects(subjectsData)
+  }
+
   useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem("isLoggedIn")
+    bootstrapData()
+  }, [currentDate])
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("api-token")
     const storedUsername = localStorage.getItem("username")
 
     if (!isLoggedIn) {
@@ -47,61 +58,31 @@ export default function Dashboard() {
       setUsername(storedUsername)
     }
 
-    // Load data from localStorage
-    const storedSubjects = localStorage.getItem("subjects")
-    const storedNotes = localStorage.getItem("notes")
-
-    if (storedSubjects) {
-      setSubjects(
-        JSON.parse(storedSubjects).map((s: any) => ({
-          ...s,
-          createdDate: new Date(s.createdDate),
-        })),
-      )
-    }
-
-    if (storedNotes) {
-      setNotes(
-        JSON.parse(storedNotes).map((n: any) => ({
-          ...n,
-          createdDate: new Date(n.createdDate),
-        })),
-      )
-    }
+    bootstrapData()
   }, [router])
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn")
+    localStorage.removeItem("api-token")
     localStorage.removeItem("username")
     router.push("/")
   }
 
-  const addSubject = (title: string, description: string, date?: Date) => {
-    const newSubject: Subject = {
-      id: Date.now().toString(),
+  const addSubject = async (title: string, description: string, date?: Date) => {
+    const newSubject: ICreateSubjectRequest = {
       title,
       description,
-      createdDate: date || new Date(), // Use provided date or current date
+      studyDate: date || new Date(),
     }
 
-    const updatedSubjects = [...subjects, newSubject]
+    const createdSubjects = await SubjectService.addSubject(newSubject)
+
+    const updatedSubjects = [...subjects, ...createdSubjects.filter(sub => sub.studyDate.getMonth() === currentDate.getMonth())]
     setSubjects(updatedSubjects)
-    localStorage.setItem("subjects", JSON.stringify(updatedSubjects))
-  }
-
-  const getSubjectsForMonth = (date: Date) => {
-    const year = date.getFullYear()
-    const month = date.getMonth()
-
-    return subjects.filter((subject) => {
-      const subjectDate = subject.createdDate
-      return subjectDate.getFullYear() === year && subjectDate.getMonth() === month
-    })
   }
 
   const getSubjectsForDay = (date: Date) => {
     return subjects.filter((subject) => {
-      const subjectDate = subject.createdDate
+      const subjectDate = subject.studyDate
       return (
         subjectDate.getDate() === date.getDate() &&
         subjectDate.getMonth() === date.getMonth() &&
@@ -110,8 +91,8 @@ export default function Dashboard() {
     })
   }
 
-  const getNotesForSubject = (subjectId: string) => {
-    return notes.filter((note) => note.subjectId === subjectId)
+  const getNotesForSubject = (subjectUuid: string) => {
+    return subjects.find((subject) => subject.uuid === subjectUuid)?.notes || []
   }
 
   return (
@@ -135,7 +116,7 @@ export default function Dashboard() {
             <ModernCalendar
               currentDate={currentDate}
               onDateChange={setCurrentDate}
-              subjects={getSubjectsForMonth(currentDate)}
+              subjects={subjects}
               onSubjectClick={setSelectedSubject}
               onDayClick={setSelectedDay}
               username={username}
@@ -143,7 +124,7 @@ export default function Dashboard() {
           </div>
 
           <ModernSubjectPanel
-            subjects={getSubjectsForMonth(currentDate)}
+            subjects={subjects}
             onAddSubject={addSubject}
             onSubjectClick={setSelectedSubject}
             currentMonth={currentDate}
@@ -154,10 +135,14 @@ export default function Dashboard() {
       {selectedSubject && (
         <NotesModal
           subject={selectedSubject}
-          notes={getNotesForSubject(selectedSubject.id)}
-          onAddNote={(subjectId, content) => {
-            const newNote = addNote(subjectId, content)
-            setNotes((prevNotes) => [...prevNotes, newNote])
+          notes={getNotesForSubject(selectedSubject.uuid)}
+          onAddNote={async (subjectUuid, content) => {
+            const newNote = await NoteService.addNote(subjectUuid, content)
+            const subject = subjects.find((s) => s.uuid === subjectUuid)
+            if (subject) {
+              subject.notes = subject.notes ? [newNote, ...subject.notes] : [newNote]
+            }
+            setSubjects([...subjects])
           }}
           onClose={() => setSelectedSubject(null)}
         />
