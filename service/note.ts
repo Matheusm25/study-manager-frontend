@@ -14,7 +14,7 @@ export class NoteService {
     if (response.status === 201) {
       const note: INote = {
         ...response.data.note,
-        createdAt: new Date(response.data.createdAt),
+        createdAt: new Date(response.data.note.createdAt),
       };
       return note;
     } else {

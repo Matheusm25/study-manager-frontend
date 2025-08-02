@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export function getHTTPServerClient({ token }: { token?: string } = {}) {
-  console.log('url', process.env.NEXT_PUBLIC_API_URL)
   const instance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
     headers: {

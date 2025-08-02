@@ -81,7 +81,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
               <p className="text-text-secondary mb-3 leading-relaxed">{subject.description}</p>
               <div className="flex items-center gap-2 text-sm text-text-secondary">
                 <Calendar className="w-4 h-4" />
-                <span>Criado em {subject.studyDate.toLocaleDateString()}</span>
+                <span>Criado em {subject.studyDate.toLocaleDateString('pt-BR')}</span>
               </div>
             </CardContent>
           </Card>
@@ -161,7 +161,7 @@ export default function NotesModal({ subject, notes, onAddNote, onClose }: Notes
                       <div className="flex items-center gap-2 text-sm text-text-secondary">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          {note.createdAt.toLocaleDateString()} at {note.createdAt.toLocaleTimeString()}
+                          Criado em {note.createdAt.toLocaleDateString('pt-BR')} às {note.createdAt.toLocaleTimeString('pt-BR')}
                         </span>
                       </div>
 

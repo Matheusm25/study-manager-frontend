@@ -179,7 +179,7 @@ export default function ModernSubjectPanel({
 
                   <div className="flex items-center gap-2 text-text-secondary text-xs">
                     <Calendar className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate">{subject.studyDate.toLocaleDateString()}</span>
+                    <span className="truncate">{subject.studyDate.toLocaleDateString('pt-BR')}</span>
                   </div>
 
                   {/* Hover Effect */}

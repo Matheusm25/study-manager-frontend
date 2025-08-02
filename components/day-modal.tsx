@@ -194,7 +194,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
 
                       <div className="flex items-center gap-2 text-sm text-text-secondary">
                         <Calendar className="w-4 h-4" />
-                        <span>Criado em {subject.studyDate.toLocaleDateString()}</span>
+                        <span>Criado em {subject.studyDate.toLocaleDateString('pt-BR')}</span>
                       </div>
 
                       {/* Hover Effect */}

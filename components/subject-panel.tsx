@@ -127,7 +127,7 @@ export default function SubjectPanel({ subjects, onAddSubject, onSubjectClick, c
                 <CardContent className="pt-4">
                   <h3 className="font-semibold text-amber-900 mb-2">{subject.title}</h3>
                   <p className="text-sm text-amber-700 mb-2">{subject.description}</p>
-                  <p className="text-xs text-amber-600">Created: {subject.createdDate.toLocaleDateString()}</p>
+                  <p className="text-xs text-amber-600">Created: {subject.createdDate.toLocaleDateString('pt-BR')}</p>
                 </CardContent>
               </Card>
             ))
