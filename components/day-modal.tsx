@@ -48,7 +48,7 @@ export default function DayModal({ date, subjects, onSubjectClick, onClose, onAd
 
   const handleAddSubjectSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (newSubjectTitle.trim() && newSubjectDescription.trim()) {
+    if (newSubjectTitle.trim()) {
       onAddSubject(newSubjectTitle.trim(), newSubjectDescription.trim(), date)
       setNewSubjectTitle("")
       setNewSubjectDescription("")

@@ -30,7 +30,7 @@ export default function ModernSubjectPanel({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (title.trim() && description.trim()) {
+    if (title.trim()) {
       onAddSubject(title.trim(), description.trim())
       setTitle("")
       setDescription("")
