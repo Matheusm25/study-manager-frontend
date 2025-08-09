@@ -6,7 +6,8 @@ export function getHTTPServerClient({ token }: { token?: string } = {}) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-    }
+    },
+    validateStatus: (status) => status >= 200 && status < 500,
   });
 
   if (token) {
