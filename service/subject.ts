@@ -5,7 +5,6 @@ import { ICreateSubjectRequest, ISubject } from "./interfaces/subject";
 export class SubjectService {
   public static async getSubjects(date?: Date): Promise<ISubject[]> {
     const token = localStorage.getItem("api-token");
-    console.log({token})
     if (!token) {
       throw new Error("User not authenticated");
     }

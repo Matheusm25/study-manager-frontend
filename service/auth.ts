@@ -10,10 +10,8 @@ export class AuthService {
     });
 
     if (response.status === 201) {
-      console.log("Login successful:", response.data);
       return response.data.token;
     } else {
-      console.log("Login failed:", response.data);
       return response.data.error;
     }
   }

@@ -26,8 +26,6 @@ export default function LoginPage() {
     if (username.trim() && password.trim()) {
       const response = await AuthService.login(username, password)
 
-      console.log("Login response:", response)
-
       if (loginErrors[response]) {
         setError(loginErrors[response])
         return
