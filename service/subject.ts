@@ -57,4 +57,34 @@ export class SubjectService {
       throw new Error(response.data.error || "Failed to add subject");
     }
   }
+
+  public static async editSubject(subjectData: ISubject): Promise<ISubject> {
+    const token = localStorage.getItem("api-token");
+    if (!token) {
+      throw new Error("User not authenticated");
+    }
+
+    const client = getHTTPServerClient({ token });
+    const response = await client.put(`/subject/${subjectData.uuid}`, subjectData);
+
+    if (response.status === 200) {
+      return subjectData;
+    } else {
+      throw new Error(response.data.error || "Failed to edit subject");
+    }
+  }
+
+  public static async deleteSubject(subjectId: string): Promise<void> {
+    const token = localStorage.getItem("api-token");
+    if (!token) {
+      throw new Error("User not authenticated");
+    }
+
+    const client = getHTTPServerClient({ token });
+    const response = await client.delete(`/subject/${subjectId}`);
+
+    if (response.status !== 204) {
+      throw new Error(response.data.error || "Failed to delete subject");
+    }
+  }
 }

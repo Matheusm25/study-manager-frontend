@@ -80,6 +80,16 @@ export default function Dashboard() {
     setSubjects(updatedSubjects)
   }
 
+  const editSubject = async (subject: ISubject) => {
+    const updatedSubject = await SubjectService.editSubject(subject)
+    setSubjects(subjects.map(sub => (sub.uuid === updatedSubject.uuid ? updatedSubject : sub)))
+  }
+
+  const deleteSubject = async (subjectId: string) => {
+    await SubjectService.deleteSubject(subjectId)
+    setSubjects(subjects.filter(sub => sub.uuid !== subjectId))
+  }
+
   const getSubjectsForDay = (date: Date) => {
     return subjects.filter((subject) => {
       const subjectDate = subject.studyDate
@@ -144,6 +154,8 @@ export default function Dashboard() {
             }
             setSubjects([...subjects])
           }}
+          onEditSubject={editSubject}
+          onDeleteSubject={deleteSubject}
           onClose={() => setSelectedSubject(null)}
         />
       )}
